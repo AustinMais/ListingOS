@@ -47,12 +47,13 @@ export default function ChatBot({ theme = 'austinmais', embedded = false, floati
 
   const isFloating = floating;
 
-  // Floating mode: icon + popover — no wrapper box; pointer-events-none so only icon/panel capture clicks
+  // Floating mode: icon + popover — transparent wrapper, no frame; pointer-events-none so only icon/panel capture clicks
   if (isFloating) {
     return (
       <div
         data-chat-theme={theme}
-        className="fixed bottom-4 right-4 z-50 flex flex-col items-end gap-0 pointer-events-none [&>*]:pointer-events-auto"
+        className="fixed bottom-4 right-4 z-50 flex flex-col items-end gap-0 bg-transparent border-0 pointer-events-none [&>*]:pointer-events-auto"
+        style={{ background: 'transparent' }}
       >
         {/* Chat panel — above icon when expanded */}
         {isExpanded && (
@@ -179,11 +180,11 @@ export default function ChatBot({ theme = 'austinmais', embedded = false, floati
           </div>
         )}
 
-        {/* Floating icon button */}
+        {/* Floating icon button — no shadow/frame when closed */}
         <button
           type="button"
           onClick={() => setIsExpanded((prev) => !prev)}
-          className="flex h-12 w-12 shrink-0 items-center justify-center rounded-full shadow-lg transition hover:scale-105"
+          className="flex h-12 w-12 shrink-0 items-center justify-center rounded-full shadow-sm transition hover:scale-105"
           style={{
             background: 'linear-gradient(to right, var(--chat-header-start), var(--chat-header-end))',
             color: 'var(--chat-header-text)',
