@@ -1,0 +1,137 @@
+@import "tailwindcss";
+
+:root {
+  --background: #ffffff;
+  --foreground: #171717;
+}
+
+@theme inline {
+  --color-background: var(--background);
+  --color-foreground: var(--foreground);
+  --font-sans: var(--font-geist-sans);
+  --font-mono: var(--font-geist-mono);
+}
+
+@media (prefers-color-scheme: dark) {
+  :root {
+    --background: #0a0a0a;
+    --foreground: #ededed;
+  }
+}
+
+body {
+  background: var(--background);
+  color: var(--foreground);
+  font-family: Arial, Helvetica, sans-serif;
+}
+
+/* ========== Chat widget default theme (Austin Mais: blue/purple + dark base) ========== */
+[data-chat-theme="austinmais"],
+:root {
+  --chat-header-start: #2563eb;
+  --chat-header-end: #7c3aed;
+  --chat-header-text: #ffffff;
+  --chat-user-bubble: #4f46e5;
+  --chat-user-text: #ffffff;
+  --chat-assistant-bubble: #f4f4f5;
+  --chat-assistant-text: #18181b;
+  --chat-input-border: #d4d4d8;
+  --chat-input-focus: #4f46e5;
+  --chat-button: #4f46e5;
+  --chat-button-hover: #4338ca;
+  --chat-button-disabled: #a1a1aa;
+  --chat-border: #e4e4e7;
+  --chat-container-bg: #ffffff;
+  --chat-placeholder: #71717a;
+  --chat-loading-bubble: #f4f4f5;
+  --chat-loading-text: #71717a;
+  --chat-error-bg: #fef2f2;
+  --chat-error-text: #b91c1c;
+  --chat-highlight-primary: #2563eb;
+  --chat-highlight-secondary: #7c3aed;
+  --chat-description-text: #71717a;
+}
+
+@media (prefers-color-scheme: dark) {
+  [data-chat-theme="austinmais"],
+  :root {
+    --chat-header-start: #3730a3;
+    --chat-header-end: #5b21b6;
+    --chat-user-bubble: #4f46e5;
+    --chat-assistant-bubble: #27272a;
+    --chat-assistant-text: #fafafa;
+    --chat-input-border: #52525b;
+    --chat-input-focus: #6366f1;
+    --chat-button: #4f46e5;
+    --chat-button-hover: #6366f1;
+    --chat-button-disabled: #52525b;
+    --chat-border: #27272a;
+    --chat-container-bg: #09090b;
+    --chat-placeholder: #a1a1aa;
+    --chat-loading-bubble: #27272a;
+    --chat-loading-text: #a1a1aa;
+    --chat-highlight-primary: #60a5fa;
+    --chat-highlight-secondary: #a78bfa;
+    --chat-description-text: #a1a1aa;
+  }
+}
+
+[data-chat-theme] .chat-assistant-content strong {
+  color: var(--chat-highlight-primary);
+}
+[data-chat-theme] .chat-assistant-content h1 {
+  color: var(--chat-assistant-text);
+}
+[data-chat-theme] .chat-assistant-content h2,
+[data-chat-theme] .chat-assistant-content h3 {
+  color: var(--chat-highlight-primary);
+}
+[data-chat-theme] .chat-assistant-content ul li,
+[data-chat-theme] .chat-assistant-content ol li {
+  color: var(--chat-highlight-secondary);
+}
+[data-chat-theme] .chat-assistant-content p {
+  color: var(--chat-description-text);
+}
+[data-chat-theme] .chat-assistant-content li p {
+  color: var(--chat-description-text);
+}
+[data-chat-theme] .chat-assistant-content a {
+  color: var(--chat-highlight-secondary);
+  text-decoration: underline;
+}
+
+[data-chat-theme] .chat-input:focus {
+  border-color: var(--chat-input-focus);
+  box-shadow: 0 0 0 2px var(--chat-input-focus);
+}
+[data-chat-theme] .chat-send-btn:hover:not(:disabled) {
+  background-color: var(--chat-button-hover) !important;
+}
+[data-chat-theme] .chat-send-btn:disabled {
+  background-color: var(--chat-button-disabled) !important;
+}
+
+/* Example: alternate theme for another site (uncomment and customize)
+[data-chat-theme="acme"] {
+  --chat-header-start: #059669;
+  --chat-header-end: #0891b2;
+  --chat-header-text: #ffffff;
+  --chat-user-bubble: #059669;
+  --chat-user-text: #ffffff;
+  --chat-assistant-bubble: #ecfdf5;
+  --chat-assistant-text: #064e3b;
+  --chat-input-border: #a7f3d0;
+  --chat-input-focus: #059669;
+  --chat-button: #059669;
+  --chat-button-hover: #047857;
+  --chat-button-disabled: #6ee7b7;
+  --chat-border: #a7f3d0;
+  --chat-container-bg: #ffffff;
+  --chat-placeholder: #047857;
+  --chat-loading-bubble: #ecfdf5;
+  --chat-loading-text: #047857;
+  --chat-error-bg: #fef2f2;
+  --chat-error-text: #b91c1c;
+}
+*/
