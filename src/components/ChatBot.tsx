@@ -18,9 +18,11 @@ function getMessageText(message: UIMessage): string {
 type ChatBotProps = {
   /** Theme for colors (e.g. "austinmais"). Define variables in globals.css under [data-chat-theme="…"]. */
   theme?: ChatTheme;
+  /** When true, uses minimal styling for embedding: no shadow, transparent background, reduced padding. */
+  embedded?: boolean;
 };
 
-export default function ChatBot({ theme = 'austinmais' }: ChatBotProps) {
+export default function ChatBot({ theme = 'austinmais', embedded = false }: ChatBotProps) {
   const [input, setInput] = useState('');
   const [isExpanded, setIsExpanded] = useState(false);
   const { messages, sendMessage, status, error } = useChat();
@@ -44,19 +46,21 @@ export default function ChatBot({ theme = 'austinmais' }: ChatBotProps) {
   return (
     <div
       data-chat-theme={theme}
-      className={`mx-auto flex w-full max-w-md flex-col overflow-hidden rounded-xl border shadow-xl transition-[height] duration-300 ${
-        isExpanded ? 'h-[600px]' : 'h-auto'
-      }`}
+      className={`flex w-full flex-col overflow-hidden transition-[height] duration-300 ${
+        embedded
+          ? 'rounded-lg border'
+          : 'mx-auto max-w-md rounded-xl border shadow-xl'
+      } ${isExpanded ? 'h-[600px]' : 'h-auto'}`}
       style={{
         borderColor: 'var(--chat-border)',
-        backgroundColor: 'var(--chat-container-bg)',
+        backgroundColor: embedded ? 'transparent' : 'var(--chat-container-bg)',
       }}
     >
       {/* Header — click to expand/collapse */}
       <button
         type="button"
         onClick={() => setIsExpanded((prev) => !prev)}
-        className="w-full p-4 text-left cursor-pointer select-none hover:opacity-95 transition-opacity flex items-center justify-between gap-2"
+        className={`w-full text-left cursor-pointer select-none hover:opacity-95 transition-opacity flex items-center justify-between gap-2 ${embedded ? 'p-3' : 'p-4'}`}
         style={{
           background: 'linear-gradient(to right, var(--chat-header-start), var(--chat-header-end))',
           color: 'var(--chat-header-text)',
@@ -73,9 +77,9 @@ export default function ChatBot({ theme = 'austinmais' }: ChatBotProps) {
 
       {/* Messages Area — only visible when expanded */}
       <div
-        className={`flex-1 overflow-y-auto p-4 space-y-4 min-h-0 transition-all duration-300 ${
-          isExpanded ? 'opacity-100' : 'opacity-0 max-h-0 overflow-hidden p-0'
-        }`}
+        className={`flex-1 overflow-y-auto space-y-4 min-h-0 transition-all duration-300 ${
+          embedded ? 'p-3' : 'p-4'
+        } ${isExpanded ? 'opacity-100' : 'opacity-0 max-h-0 overflow-hidden p-0'}`}
       >
         {error && (
           <div
@@ -150,7 +154,7 @@ export default function ChatBot({ theme = 'austinmais' }: ChatBotProps) {
       {/* Input Area */}
       <form
         onSubmit={handleSubmit}
-        className="border-t p-4"
+        className={`border-t ${embedded ? 'p-3' : 'p-4'}`}
         style={{ borderColor: 'var(--chat-border)' }}
       >
         <div className="flex gap-2">
