@@ -1,6 +1,8 @@
-# Embed the Chat Assistant
+# Embed Site Concierge
 
 Use the `/embed` route for a transparent background when embedding in an iframe.
+
+Set `CLIENT_NAME` in your environment (e.g. `Austin Mais`) to customize the concierge for each SaaS deployment.
 
 ---
 
@@ -9,7 +11,7 @@ Use the `/embed` route for a transparent background when embedding in an iframe.
 **Option 1:** Paste this before `</body>` on any HTML page. Replace the URL with your deployed assistant URL.
 
 ```html
-<!-- Austin's Automated Assistant - paste before </body> -->
+<!-- Site Concierge - paste before </body> -->
 <iframe
   src="https://YOUR-ASSISTANT-URL.vercel.app/embed"
   style="position:fixed;bottom:0;right:0;width:440px;height:720px;border:none;background:transparent;z-index:9999;"
@@ -20,7 +22,7 @@ Use the `/embed` route for a transparent background when embedding in an iframe.
 **Option 2:** Use a script tag — add the script before `</body>`. Update the `data-src` attribute with your assistant URL.
 
 ```html
-<!-- Austin's Automated Assistant - paste before </body> -->
+<!-- Site Concierge - paste before </body> -->
 <script>
 (function() {
   var url = 'https://YOUR-ASSISTANT-URL.vercel.app/embed';

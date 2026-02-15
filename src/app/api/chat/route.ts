@@ -1,6 +1,7 @@
 import { openai } from '@ai-sdk/openai';
 import { convertToModelMessages, streamText } from 'ai';
 import { fetchPortfolioContext } from '@/lib/portfolio-api';
+import { getClientName } from '@/lib/config';
 
 /** Extract year from a message if it looks like "where did Austin work in 2021?" or "experience in 2020". */
 function getAskedYear(messages: Array<{ role?: string; parts?: Array<{ type?: string; text?: string }>; content?: string }>): number | null {
@@ -76,13 +77,15 @@ function formatExperienceListForPrompt(experience: Array<Record<string, unknown>
     .join('; ');
 }
 
-const FRIENDLY_ERROR_SYSTEM = `You are Austin's Automated Assistant. Something has gone wrong on your end—you cannot access your knowledge base or process requests normally right now. The user just sent a message. Respond briefly and warmly in 1-2 short paragraphs: acknowledge you're having technical difficulties, apologize, and ask them to try again in a few minutes. Stay in character. Use a conversational tone. Do not mention JSON, APIs, error codes, or technical details.`;
+function getFriendlyErrorSystem(clientName: string): string {
+  return `You are Site Concierge, ${clientName}'s digital twin. Something has gone wrong on your end—you cannot access your knowledge base or process requests normally right now. The user just sent a message. Respond briefly and warmly in 1-2 short paragraphs: acknowledge you're having technical difficulties, apologize, and ask them to try again in a few minutes. Stay in character. Use a conversational tone. Do not mention JSON, APIs, error codes, or technical details.`;
+}
 
 async function streamFriendlyErrorResponse(messages: unknown): Promise<Response> {
   const safeMessages = Array.isArray(messages) && messages.length > 0 ? messages : [{ role: 'user' as const, content: 'Hi' }];
   const result = streamText({
     model: openai('gpt-4o-mini'),
-    system: FRIENDLY_ERROR_SYSTEM,
+    system: getFriendlyErrorSystem(getClientName()),
     messages: await convertToModelMessages(safeMessages),
   });
   return result.toUIMessageStreamResponse();
@@ -135,9 +138,12 @@ export async function POST(req: Request) {
       }
     }
 
+    const clientName = getClientName();
     const result = streamText({
       model: openai('gpt-4o-mini'),
-      system: `You are Austin's Automated Assistant. Answer questions using ONLY the following live data from Austin Mais's consulting site. Do not invent, guess, or substitute any details. Every company name, role, period, and description must come exactly from the JSON below.${yearFilterNote}
+      system: `You are ${clientName}'s digital twin — Site Concierge. You ONLY answer questions about their resume, their tech stack and skills, their rates and services (packages, pricing, retainer), and their availability. Stick strictly to the data provided in the APIs—never invent, guess, or substitute. If asked about anything else (e.g. cooking, hobbies, unrelated topics), politely steer the conversation back to what you can help with. Stay professional.
+
+Answer questions using ONLY the following live data from ${clientName}'s consulting site. Do not invent, guess, or substitute any details. Every company name, role, period, description, price, package name, and feature must come exactly from the JSON below.${yearFilterNote}
 
 Critical for experience: The work history is in the "resume" section under "experience" (an array). Use ONLY those entries—the exact companies, roles, periods, and descriptions listed there. Do not add, remove, or replace any employer or role. If the JSON has 5 experience entries, list all 5; if it has 1, list that 1; if it has 0, say there are no entries for that year. Never use placeholder or example companies (e.g. "Acme Corp") or roles that are not in the data.
 

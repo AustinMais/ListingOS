@@ -16,6 +16,8 @@ function getMessageText(message: UIMessage): string {
 }
 
 type ChatBotProps = {
+  /** Client name (e.g. "Austin Mais"). From env CLIENT_NAME for SaaS deployments. */
+  clientName?: string;
   /** Theme for colors (e.g. "austinmais"). Define variables in globals.css under [data-chat-theme="…"]. */
   theme?: ChatTheme;
   /** When true, uses minimal styling for embedding: no shadow, transparent background, reduced padding. */
@@ -24,7 +26,12 @@ type ChatBotProps = {
   floating?: boolean;
 };
 
-export default function ChatBot({ theme = 'austinmais', embedded = false, floating = false }: ChatBotProps) {
+export default function ChatBot({
+  clientName = 'Austin Mais',
+  theme = 'austinmais',
+  embedded = false,
+  floating = false,
+}: ChatBotProps) {
   const [input, setInput] = useState('');
   const [isExpanded, setIsExpanded] = useState(false);
   const { messages, sendMessage, status, error } = useChat();
@@ -78,8 +85,8 @@ export default function ChatBot({ theme = 'austinmais', embedded = false, floati
               }}
             >
               <div className="text-left">
-                <h2 className="text-sm font-bold">Austin&apos;s Assistant</h2>
-                <p className="text-xs opacity-90">Ask about stack or rates</p>
+                <h2 className="text-sm font-bold">Site Concierge</h2>
+                <p className="text-xs opacity-90">Ask about {clientName}&apos;s resume, tech stack, rates, or availability</p>
               </div>
               <span className="text-lg" aria-hidden>×</span>
             </button>
@@ -98,7 +105,7 @@ export default function ChatBot({ theme = 'austinmais', embedded = false, floati
                 {messages.length === 0 && !error && (
                   <div className="py-6 text-center text-sm" style={{ color: 'var(--chat-placeholder)' }}>
                     <p>Go ahead, grill me.</p>
-                    <p className="text-xs">&quot;What is Austin&apos;s favorite tech stack?&quot;</p>
+                    <p className="text-xs">&quot;What is {clientName}&apos;s favorite tech stack?&quot;</p>
                   </div>
                 )}
                 {messages.map((m) => (
@@ -143,7 +150,7 @@ export default function ChatBot({ theme = 'austinmais', embedded = false, floati
                       className="rounded-lg px-3 py-2 text-sm animate-pulse"
                       style={{ backgroundColor: 'var(--chat-loading-bubble)', color: 'var(--chat-loading-text)' }}
                     >
-                      Thinking...
+                      Site Concierge is thinking...
                     </div>
                   </div>
                 )}
@@ -234,8 +241,8 @@ export default function ChatBot({ theme = 'austinmais', embedded = false, floati
         }}
       >
         <div>
-          <h2 className="font-bold">Austin&apos;s Automated Assistant</h2>
-          <p className="text-xs opacity-90">Ask me about my stack or rates!</p>
+          <h2 className="font-bold">Site Concierge</h2>
+          <p className="text-xs opacity-90">Ask about {clientName}&apos;s resume, tech stack, rates, or availability</p>
         </div>
         <span className="text-lg shrink-0" aria-hidden>
           {isExpanded ? '−' : '+'}
@@ -259,7 +266,7 @@ export default function ChatBot({ theme = 'austinmais', embedded = false, floati
         {messages.length === 0 && !error && (
           <div className="mt-8 text-center" style={{ color: 'var(--chat-placeholder)' }}>
             <p>Go ahead, grill me.</p>
-            <p className="text-sm">&quot;What is Austin&apos;s favorite tech stack?&quot;</p>
+            <p className="text-sm">&quot;What is {clientName}&apos;s favorite tech stack?&quot;</p>
           </div>
         )}
 
@@ -311,7 +318,7 @@ export default function ChatBot({ theme = 'austinmais', embedded = false, floati
               className="rounded-lg px-4 py-2 text-sm animate-pulse"
               style={{ backgroundColor: 'var(--chat-loading-bubble)', color: 'var(--chat-loading-text)' }}
             >
-              Austin&apos;s Assistant is thinking...
+              Site Concierge is thinking...
             </div>
           </div>
         )}
