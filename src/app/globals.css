@@ -25,7 +25,7 @@ body {
   font-family: Arial, Helvetica, sans-serif;
 }
 
-/* ========== Chat widget default theme (Austin Mais: blue/purple + dark base) ========== */
+/* ========== Chat widget default theme (Austin Mais: blue/purple + dark slate base) ========== */
 [data-chat-theme="austinmais"],
 :root {
   --chat-header-start: #2563eb;
@@ -33,23 +33,23 @@ body {
   --chat-header-text: #ffffff;
   --chat-user-bubble: #4f46e5;
   --chat-user-text: #ffffff;
-  --chat-assistant-bubble: #f4f4f5;
-  --chat-assistant-text: #18181b;
-  --chat-input-border: #d4d4d8;
-  --chat-input-focus: #4f46e5;
+  --chat-assistant-bubble: #334155;
+  --chat-assistant-text: #f1f5f9;
+  --chat-input-border: #475569;
+  --chat-input-focus: #6366f1;
   --chat-button: #4f46e5;
-  --chat-button-hover: #4338ca;
-  --chat-button-disabled: #a1a1aa;
-  --chat-border: #e4e4e7;
-  --chat-container-bg: #ffffff;
-  --chat-placeholder: #71717a;
-  --chat-loading-bubble: #f4f4f5;
-  --chat-loading-text: #71717a;
-  --chat-error-bg: #fef2f2;
-  --chat-error-text: #b91c1c;
-  --chat-highlight-primary: #2563eb;
-  --chat-highlight-secondary: #7c3aed;
-  --chat-description-text: #71717a;
+  --chat-button-hover: #6366f1;
+  --chat-button-disabled: #64748b;
+  --chat-border: #475569;
+  --chat-container-bg: #1e293b;
+  --chat-placeholder: #94a3b8;
+  --chat-loading-bubble: #334155;
+  --chat-loading-text: #94a3b8;
+  --chat-error-bg: #450a0a;
+  --chat-error-text: #fca5a5;
+  --chat-highlight-primary: #60a5fa;
+  --chat-highlight-secondary: #a78bfa;
+  --chat-description-text: #94a3b8;
 }
 
 @media (prefers-color-scheme: dark) {
