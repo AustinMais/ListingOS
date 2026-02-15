@@ -5,8 +5,8 @@ import { type UIMessage, isTextUIPart } from 'ai';
 import { useEffect, useRef, useState } from 'react';
 import ReactMarkdown from 'react-markdown';
 
-/** Theme name for chat widget colors. Set in globals.css via [data-chat-theme="…"]. Default "austinmais". */
-export type ChatTheme = 'austinmais' | (string & {});
+/** Theme name for chat widget colors. Set in globals.css via [data-chat-theme="…"]. Default "kellerwilliams". */
+export type ChatTheme = 'listingos' | 'kellerwilliams' | (string & {});
 
 function getMessageText(message: UIMessage): string {
   return message.parts
@@ -16,9 +16,7 @@ function getMessageText(message: UIMessage): string {
 }
 
 type ChatBotProps = {
-  /** Client name (e.g. "Austin Mais"). From env CLIENT_NAME for SaaS deployments. */
-  clientName?: string;
-  /** Theme for colors (e.g. "austinmais"). Define variables in globals.css under [data-chat-theme="…"]. */
+  /** Theme for colors (e.g. "kellerwilliams", "listingos"). Define variables in globals.css under [data-chat-theme="…"]. */
   theme?: ChatTheme;
   /** When true, uses minimal styling for embedding: no shadow, transparent background, reduced padding. */
   embedded?: boolean;
@@ -27,8 +25,7 @@ type ChatBotProps = {
 };
 
 export default function ChatBot({
-  clientName = 'Austin Mais',
-  theme = 'austinmais',
+  theme = 'kellerwilliams',
   embedded = false,
   floating = false,
 }: ChatBotProps) {
@@ -85,8 +82,8 @@ export default function ChatBot({
               }}
             >
               <div className="text-left">
-                <h2 className="text-sm font-bold">Site Concierge</h2>
-                <p className="text-xs opacity-90">Ask about {clientName}&apos;s resume, tech stack, rates, or availability</p>
+                <h2 className="text-sm font-bold">ListingOS</h2>
+                <p className="text-xs opacity-90">Schedule a 15-minute listing consultation</p>
               </div>
               <span className="text-lg" aria-hidden>×</span>
             </button>
@@ -104,8 +101,8 @@ export default function ChatBot({
                 )}
                 {messages.length === 0 && !error && (
                   <div className="py-6 text-center text-sm" style={{ color: 'var(--chat-placeholder)' }}>
-                    <p>Go ahead, grill me.</p>
-                    <p className="text-xs">&quot;What is {clientName}&apos;s favorite tech stack?&quot;</p>
+                    <p>How can I help?</p>
+                    <p className="text-xs">&quot;What&apos;s the local market like?&quot; or &quot;I&apos;d like to schedule a consultation&quot;</p>
                   </div>
                 )}
                 {messages.map((m) => (
@@ -150,7 +147,7 @@ export default function ChatBot({
                       className="rounded-lg px-3 py-2 text-sm animate-pulse"
                       style={{ backgroundColor: 'var(--chat-loading-bubble)', color: 'var(--chat-loading-text)' }}
                     >
-                      Site Concierge is thinking...
+                      ListingOS is thinking...
                     </div>
                   </div>
                 )}
@@ -241,8 +238,8 @@ export default function ChatBot({
         }}
       >
         <div>
-          <h2 className="font-bold">Site Concierge</h2>
-          <p className="text-xs opacity-90">Ask about {clientName}&apos;s resume, tech stack, rates, or availability</p>
+          <h2 className="font-bold">ListingOS</h2>
+          <p className="text-xs opacity-90">Schedule a 15-minute listing consultation</p>
         </div>
         <span className="text-lg shrink-0" aria-hidden>
           {isExpanded ? '−' : '+'}
@@ -265,8 +262,8 @@ export default function ChatBot({
         )}
         {messages.length === 0 && !error && (
           <div className="mt-8 text-center" style={{ color: 'var(--chat-placeholder)' }}>
-            <p>Go ahead, grill me.</p>
-            <p className="text-sm">&quot;What is {clientName}&apos;s favorite tech stack?&quot;</p>
+            <p>How can I help?</p>
+            <p className="text-sm">&quot;What&apos;s the local market like?&quot; or &quot;I&apos;d like to schedule a consultation&quot;</p>
           </div>
         )}
 
@@ -318,7 +315,7 @@ export default function ChatBot({
               className="rounded-lg px-4 py-2 text-sm animate-pulse"
               style={{ backgroundColor: 'var(--chat-loading-bubble)', color: 'var(--chat-loading-text)' }}
             >
-              Site Concierge is thinking...
+              ListingOS is thinking...
             </div>
           </div>
         )}

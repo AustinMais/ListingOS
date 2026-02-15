@@ -1,7 +1,6 @@
 import type { Metadata } from "next";
 import { Geist, Geist_Mono } from "next/font/google";
 import { Analytics } from "@vercel/analytics/next";
-import { getClientName } from "@/lib/config";
 import "./globals.css";
 
 const geistSans = Geist({
@@ -15,10 +14,9 @@ const geistMono = Geist_Mono({
 });
 
 export function generateMetadata(): Metadata {
-  const clientName = getClientName();
   return {
-    title: "Site Concierge",
-    description: `${clientName}'s digital twin — ask about resume, tech stack, rates, or availability`,
+    title: "ListingOS | Intelligent Real Estate",
+    description: "Intelligent real estate assistant — listings, insights, and trusted guidance",
   };
 }
 

@@ -3,6 +3,9 @@
 :root {
   --background: #ffffff;
   --foreground: #171717;
+  /* ListingOS primary: deep navy (trust) + emerald accent (growth/money) */
+  --primary: #0f172a;
+  --primary-accent: #064e3b;
 }
 
 @theme inline {
@@ -16,6 +19,8 @@
   :root {
     --background: #0a0a0a;
     --foreground: #ededed;
+    --primary: #1e293b;
+    --primary-accent: #047857;
   }
 }
 
@@ -25,20 +30,20 @@ body {
   font-family: Arial, Helvetica, sans-serif;
 }
 
-/* ========== Chat widget default theme (Austin Mais: blue/purple + dark slate base) ========== */
-[data-chat-theme="austinmais"],
+/* ========== Chat widget default theme (ListingOS: navy + emerald for trust/money) ========== */
+[data-chat-theme="listingos"],
 :root {
-  --chat-header-start: #2563eb;
-  --chat-header-end: #7c3aed;
+  --chat-header-start: #0f172a;
+  --chat-header-end: #064e3b;
   --chat-header-text: #ffffff;
-  --chat-user-bubble: #4f46e5;
+  --chat-user-bubble: #064e3b;
   --chat-user-text: #ffffff;
   --chat-assistant-bubble: #334155;
   --chat-assistant-text: #f1f5f9;
   --chat-input-border: #475569;
-  --chat-input-focus: #6366f1;
-  --chat-button: #4f46e5;
-  --chat-button-hover: #6366f1;
+  --chat-input-focus: #047857;
+  --chat-button: #064e3b;
+  --chat-button-hover: #047857;
   --chat-button-disabled: #64748b;
   --chat-border: #475569;
   --chat-container-bg: #1e293b;
@@ -47,31 +52,31 @@ body {
   --chat-loading-text: #94a3b8;
   --chat-error-bg: #450a0a;
   --chat-error-text: #fca5a5;
-  --chat-highlight-primary: #60a5fa;
-  --chat-highlight-secondary: #a78bfa;
+  --chat-highlight-primary: #10b981;
+  --chat-highlight-secondary: #34d399;
   --chat-description-text: #94a3b8;
 }
 
 @media (prefers-color-scheme: dark) {
-  [data-chat-theme="austinmais"],
+  [data-chat-theme="listingos"],
   :root {
-    --chat-header-start: #3730a3;
-    --chat-header-end: #5b21b6;
-    --chat-user-bubble: #4f46e5;
+    --chat-header-start: #0f172a;
+    --chat-header-end: #064e3b;
+    --chat-user-bubble: #064e3b;
     --chat-assistant-bubble: #27272a;
     --chat-assistant-text: #fafafa;
     --chat-input-border: #52525b;
-    --chat-input-focus: #6366f1;
-    --chat-button: #4f46e5;
-    --chat-button-hover: #6366f1;
+    --chat-input-focus: #047857;
+    --chat-button: #064e3b;
+    --chat-button-hover: #047857;
     --chat-button-disabled: #52525b;
     --chat-border: #27272a;
     --chat-container-bg: #09090b;
     --chat-placeholder: #a1a1aa;
     --chat-loading-bubble: #27272a;
     --chat-loading-text: #a1a1aa;
-    --chat-highlight-primary: #60a5fa;
-    --chat-highlight-secondary: #a78bfa;
+    --chat-highlight-primary: #10b981;
+    --chat-highlight-secondary: #34d399;
     --chat-description-text: #a1a1aa;
   }
 }
@@ -110,6 +115,56 @@ body {
 }
 [data-chat-theme] .chat-send-btn:disabled {
   background-color: var(--chat-button-disabled) !important;
+}
+
+/* ========== Keller Williams brand theme ========== */
+/* KW Red: #CE011F | Grays: #4D4D4D, #828282, #CCCCCC */
+[data-chat-theme="kellerwilliams"] {
+  --chat-header-start: #CE011F;
+  --chat-header-end: #a00119;
+  --chat-header-text: #ffffff;
+  --chat-user-bubble: #CE011F;
+  --chat-user-text: #ffffff;
+  --chat-assistant-bubble: #4D4D4D;
+  --chat-assistant-text: #fafafa;
+  --chat-input-border: #828282;
+  --chat-input-focus: #CE011F;
+  --chat-button: #CE011F;
+  --chat-button-hover: #a00119;
+  --chat-button-disabled: #CCCCCC;
+  --chat-border: #828282;
+  --chat-container-bg: #1a1a1a;
+  --chat-placeholder: #CCCCCC;
+  --chat-loading-bubble: #4D4D4D;
+  --chat-loading-text: #CCCCCC;
+  --chat-error-bg: #450a0a;
+  --chat-error-text: #fca5a5;
+  --chat-highlight-primary: #ff4d6a;
+  --chat-highlight-secondary: #ff8099;
+  --chat-description-text: #CCCCCC;
+}
+
+@media (prefers-color-scheme: dark) {
+  [data-chat-theme="kellerwilliams"] {
+    --chat-header-start: #CE011F;
+    --chat-header-end: #a00119;
+    --chat-user-bubble: #CE011F;
+    --chat-assistant-bubble: #2d2d2d;
+    --chat-assistant-text: #fafafa;
+    --chat-input-border: #525252;
+    --chat-input-focus: #CE011F;
+    --chat-button: #CE011F;
+    --chat-button-hover: #a00119;
+    --chat-button-disabled: #525252;
+    --chat-border: #404040;
+    --chat-container-bg: #0a0a0a;
+    --chat-placeholder: #828282;
+    --chat-loading-bubble: #2d2d2d;
+    --chat-loading-text: #828282;
+    --chat-highlight-primary: #ff4d6a;
+    --chat-highlight-secondary: #ff8099;
+    --chat-description-text: #a3a3a3;
+  }
 }
 
 /* Example: alternate theme for another site (uncomment and customize)

@@ -1,5 +1,5 @@
 /**
- * Portfolio API client — discovery + multi-endpoint fetch for Austin Mais consulting site.
+ * Portfolio API client — discovery + multi-endpoint fetch for portfolio/consulting sites.
  * GET /api returns index with endpoints; then we fetch the paths needed for assistant context.
  */
 
@@ -10,12 +10,12 @@ export type PortfolioDiscovery = {
   endpoints: Array<{ path: string; description: string }>;
 };
 
-/** Portfolio API base URL from env (e.g. http://localhost:3000 or https://austinmais.com). All endpoints are built from this + /api/.... */
+/** Portfolio API base URL from env (e.g. http://localhost:3000). All endpoints are built from this + /api/.... */
 export function getPortfolioBaseUrl(): string {
   const base = process.env.PORTFOLIO_BASE_URL;
   if (!base) {
     throw new Error(
-      'PORTFOLIO_BASE_URL is not set. For local use http://localhost:3000; for production use https://austinmais.com'
+      'PORTFOLIO_BASE_URL is not set. Set it to your portfolio API base URL (e.g. http://localhost:3000)'
     );
   }
   return base.trim().replace(/\/$/, '').replace(/\/api\/?$/, '');

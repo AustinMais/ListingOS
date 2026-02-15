@@ -1,35 +1,33 @@
-# Embed Site Concierge
+# Embed ListingOS
 
 Use the `/embed` route for a transparent background when embedding in an iframe.
-
-Set `CLIENT_NAME` in your environment (e.g. `Austin Mais`) to customize the concierge for each SaaS deployment.
 
 ---
 
 ## Copy-paste for your webpage
 
-**Option 1:** Paste this before `</body>` on any HTML page. Replace the URL with your deployed assistant URL.
+**Option 1:** Paste this before `</body>` on any HTML page. Replace the URL with your deployed ListingOS URL.
 
 ```html
-<!-- Site Concierge - paste before </body> -->
+<!-- ListingOS - paste before </body> -->
 <iframe
-  src="https://YOUR-ASSISTANT-URL.vercel.app/embed"
+  src="https://YOUR-LISTINGOS-URL.vercel.app/embed"
   style="position:fixed;bottom:0;right:0;width:440px;height:720px;border:none;background:transparent;z-index:9999;"
-  title="Chat Assistant"
+  title="ListingOS | Intelligent Real Estate"
 ></iframe>
 ```
 
-**Option 2:** Use a script tag — add the script before `</body>`. Update the `data-src` attribute with your assistant URL.
+**Option 2:** Use a script tag — add the script before `</body>`. Update the `data-src` attribute with your ListingOS URL.
 
 ```html
-<!-- Site Concierge - paste before </body> -->
+<!-- ListingOS - paste before </body> -->
 <script>
 (function() {
-  var url = 'https://YOUR-ASSISTANT-URL.vercel.app/embed';
+  var url = 'https://YOUR-LISTINGOS-URL.vercel.app/embed';
   var iframe = document.createElement('iframe');
   iframe.src = url;
   iframe.style.cssText = 'position:fixed;bottom:0;right:0;width:440px;height:720px;border:none;background:transparent;z-index:9999;';
-  iframe.title = 'Chat Assistant';
+  iframe.title = 'ListingOS | Intelligent Real Estate';
   document.body.appendChild(iframe);
 })();
 </script>
@@ -39,11 +37,11 @@ Set `CLIENT_NAME` in your environment (e.g. `Austin Mais`) to customize the conc
 
 ## Iframe embed code (reference)
 
-Replace `https://your-assistant-domain.com` with your deployed URL (e.g. `https://automated-assistant.vercel.app`).
+Replace `https://your-listingos-domain.com` with your deployed URL (e.g. `https://listing-os.vercel.app`).
 
 ```html
 <iframe
-  src="https://your-assistant-domain.com/embed"
+  src="https://your-listingos-domain.com/embed"
   style="
     position: fixed;
     bottom: 0;
@@ -54,7 +52,7 @@ Replace `https://your-assistant-domain.com` with your deployed URL (e.g. `https:
     background: transparent;
     z-index: 9999;
   "
-  title="Chat Assistant"
+  title="ListingOS | Intelligent Real Estate"
 ></iframe>
 ```
 
@@ -77,7 +75,7 @@ To embed in a specific container instead of fixed to the corner:
 ```html
 <div style="position: relative; width: 440px; height: 720px;">
   <iframe
-    src="https://your-assistant-domain.com/embed"
+    src="https://your-listingos-domain.com/embed"
     style="
       position: absolute;
       bottom: 0;
@@ -87,7 +85,7 @@ To embed in a specific container instead of fixed to the corner:
       border: none;
       background: transparent;
     "
-    title="Chat Assistant"
+    title="ListingOS | Intelligent Real Estate"
   ></iframe>
 </div>
 ```

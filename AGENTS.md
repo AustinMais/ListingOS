@@ -4,7 +4,7 @@ This file provides guidance to WARP (warp.dev) when working with code in this re
 
 ## Project Overview
 
-Automated Assistant — a Next.js 16 chat application using the Vercel AI SDK with OpenAI integration.
+ListingOS — a Next.js 16 chat application for Keller Williams realtors. Uses the Vercel AI SDK with OpenAI integration. AI Inside Sales Agent (ISA) to schedule listing consultations.
 
 ## Commands
 

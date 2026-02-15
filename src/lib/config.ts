@@ -1,7 +1,7 @@
 /**
- * SaaS config — client name and other deploy-time settings.
- * Set CLIENT_NAME in env (e.g. "Austin Mais") to customize for each client.
+ * SaaS config — deploy-time settings.
+ * Set CLIENT_NAME in env to override the display name (default: ListingOS).
  */
 export function getClientName(): string {
-  return process.env.CLIENT_NAME ?? 'Austin Mais';
+  return process.env.CLIENT_NAME ?? 'ListingOS';
 }
