@@ -1,9 +1,14 @@
 import ChatBot from '@/components/ChatBot';
+import DemoGate from '@/components/DemoGate';
+import RealtorBackdrop from '@/components/RealtorBackdrop';
 
 export default function Home() {
   return (
-    <div className="min-h-screen font-sans">
-      <ChatBot floating />
-    </div>
+    <DemoGate>
+      <div className="relative min-h-screen font-sans">
+        <RealtorBackdrop />
+        <ChatBot floating />
+      </div>
+    </DemoGate>
   );
 }

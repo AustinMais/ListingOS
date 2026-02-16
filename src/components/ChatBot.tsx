@@ -1,6 +1,7 @@
 'use client';
 
 import { useChat } from '@ai-sdk/react';
+import { DEMO_PROMPTS } from '@/lib/listing-context';
 import { type UIMessage, isTextUIPart } from 'ai';
 import { useEffect, useRef, useState } from 'react';
 import ReactMarkdown from 'react-markdown';
@@ -31,7 +32,7 @@ export default function ChatBot({
 }: ChatBotProps) {
   const [input, setInput] = useState('');
   const [isExpanded, setIsExpanded] = useState(false);
-  const { messages, sendMessage, status, error } = useChat();
+  const { messages, sendMessage, status, error, setMessages } = useChat();
   const messagesEndRef = useRef<HTMLDivElement>(null);
 
   const isLoading = status === 'streaming' || status === 'submitted';
@@ -46,6 +47,16 @@ export default function ChatBot({
     if (!text || isLoading) return;
     setInput('');
     sendMessage({ text });
+    setIsExpanded(true);
+  };
+
+  const handleClearChat = () => {
+    setMessages([]);
+  };
+
+  const handleDemoPrompt = (prompt: string) => {
+    setInput('');
+    sendMessage({ text: prompt });
     setIsExpanded(true);
   };
 
@@ -71,10 +82,8 @@ export default function ChatBot({
             }}
           >
             {/* Header — no padding */}
-            <button
-              type="button"
-              onClick={() => setIsExpanded(false)}
-              className="flex w-full cursor-pointer select-none items-center justify-between border-b px-2 py-1.5 transition-opacity hover:opacity-95"
+            <div
+              className="flex w-full cursor-pointer select-none items-center justify-between border-b px-2 py-1.5 transition-opacity"
               style={{
                 background: 'linear-gradient(to right, var(--chat-header-start), var(--chat-header-end))',
                 color: 'var(--chat-header-text)',
@@ -85,8 +94,25 @@ export default function ChatBot({
                 <h2 className="text-sm font-bold">ListingOS</h2>
                 <p className="text-xs opacity-90">Schedule a 15-minute listing consultation</p>
               </div>
-              <span className="text-lg" aria-hidden>×</span>
-            </button>
+              <div className="flex items-center gap-1">
+                <button
+                  type="button"
+                  onClick={handleClearChat}
+                  className="rounded px-2 py-1 text-xs font-medium opacity-90 hover:opacity-100 hover:bg-white/10 transition"
+                  title="Start a new conversation"
+                >
+                  Clear Chat
+                </button>
+                <button
+                  type="button"
+                  onClick={() => setIsExpanded(false)}
+                  className="rounded p-1 text-lg leading-none hover:bg-white/10 transition"
+                  aria-label="Close chat"
+                >
+                  ×
+                </button>
+              </div>
+            </div>
 
             {/* Messages — expands to fill space, scrolls for long responses */}
             <div className="flex min-h-[360px] flex-1 flex-col overflow-y-auto px-2">
@@ -100,9 +126,23 @@ export default function ChatBot({
                   </div>
                 )}
                 {messages.length === 0 && !error && (
-                  <div className="py-6 text-center text-sm" style={{ color: 'var(--chat-placeholder)' }}>
-                    <p>How can I help?</p>
-                    <p className="text-xs">&quot;What&apos;s the local market like?&quot; or &quot;I&apos;d like to schedule a consultation&quot;</p>
+                  <div className="py-6 px-2 text-center text-sm" style={{ color: 'var(--chat-placeholder)' }}>
+                    <p className="mb-3">How can I help?</p>
+                    <p className="text-xs mb-3">Try one of these demo prompts:</p>
+                    <div className="flex flex-col gap-2">
+                      {DEMO_PROMPTS.map((prompt) => (
+                        <button
+                          key={prompt}
+                          type="button"
+                          onClick={() => handleDemoPrompt(prompt)}
+                          disabled={isLoading}
+                          className="w-full rounded-lg border px-3 py-2 text-left text-xs transition hover:bg-white/5 disabled:opacity-50"
+                          style={{ borderColor: 'var(--chat-input-border)' }}
+                        >
+                          {prompt}
+                        </button>
+                      ))}
+                    </div>
                   </div>
                 )}
                 {messages.map((m) => (
@@ -158,29 +198,34 @@ export default function ChatBot({
             {/* Input — minimal padding */}
             <form
               onSubmit={handleSubmit}
-              className="flex gap-2 border-t px-2 py-1.5"
+              className="flex gap-2 border-t px-2 py-2 sm:py-1.5"
               style={{ borderColor: 'var(--chat-border)' }}
             >
               <input
-                className="chat-input flex-1 rounded border px-2 py-1.5 text-sm focus:outline-none"
+                className="chat-input flex-1 rounded border px-3 py-3 sm:py-2 min-h-[44px] focus:outline-none"
                 style={{
                   borderColor: 'var(--chat-input-border)',
                   backgroundColor: 'var(--chat-container-bg)',
                   color: 'var(--chat-assistant-text)',
+                  fontSize: '16px',
                 }}
                 value={input}
                 placeholder="Type a message..."
                 onChange={(e) => setInput(e.target.value)}
+                autoComplete="off"
               />
               <button
                 type="submit"
                 disabled={isLoading || !input.trim()}
-                className="chat-send-btn shrink-0 px-4 py-2 text-sm font-semibold text-white transition disabled:opacity-50"
+                className="chat-send-btn shrink-0 min-h-[44px] min-w-[60px] px-4 py-3 sm:py-2 text-base font-semibold text-white transition disabled:opacity-50 touch-manipulation"
                 style={{ backgroundColor: 'var(--chat-button)' }}
               >
                 Send
               </button>
             </form>
+            <p className="px-2 pb-2 pt-0.5 text-[10px] text-gray-500" style={{ color: 'var(--chat-placeholder)' }}>
+              ListingOS is an AI assistant and may make mistakes. Verify important details independently.
+            </p>
           </div>
         )}
 
@@ -228,23 +273,40 @@ export default function ChatBot({
       }}
     >
       {/* Header — click to expand/collapse */}
-      <button
-        type="button"
-        onClick={() => setIsExpanded((prev) => !prev)}
+      <div
         className={`w-full text-left cursor-pointer select-none hover:opacity-95 transition-opacity flex items-center justify-between gap-2 ${embedded ? 'p-3' : 'p-4'}`}
         style={{
           background: 'linear-gradient(to right, var(--chat-header-start), var(--chat-header-end))',
           color: 'var(--chat-header-text)',
         }}
       >
-        <div>
+        <button
+          type="button"
+          onClick={() => setIsExpanded((prev) => !prev)}
+          className="flex-1 text-left"
+        >
           <h2 className="font-bold">ListingOS</h2>
           <p className="text-xs opacity-90">Schedule a 15-minute listing consultation</p>
+        </button>
+        <div className="flex items-center gap-2 shrink-0">
+          <button
+            type="button"
+            onClick={handleClearChat}
+            className="rounded px-2 py-1 text-xs font-medium opacity-90 hover:opacity-100 hover:bg-white/10 transition"
+            title="Start a new conversation"
+          >
+            Clear Chat
+          </button>
+          <button
+            type="button"
+            onClick={() => setIsExpanded((prev) => !prev)}
+            className="text-lg leading-none"
+            aria-label={isExpanded ? 'Collapse' : 'Expand'}
+          >
+            {isExpanded ? '−' : '+'}
+          </button>
         </div>
-        <span className="text-lg shrink-0" aria-hidden>
-          {isExpanded ? '−' : '+'}
-        </span>
-      </button>
+      </div>
 
       {/* Messages Area — only visible when expanded */}
       <div
@@ -261,9 +323,23 @@ export default function ChatBot({
           </div>
         )}
         {messages.length === 0 && !error && (
-          <div className="mt-8 text-center" style={{ color: 'var(--chat-placeholder)' }}>
-            <p>How can I help?</p>
-            <p className="text-sm">&quot;What&apos;s the local market like?&quot; or &quot;I&apos;d like to schedule a consultation&quot;</p>
+          <div className="mt-8 text-center px-2" style={{ color: 'var(--chat-placeholder)' }}>
+            <p className="mb-3">How can I help?</p>
+            <p className="text-sm mb-3">Try one of these demo prompts:</p>
+            <div className="flex flex-col gap-2 max-w-sm mx-auto">
+              {DEMO_PROMPTS.map((prompt) => (
+                <button
+                  key={prompt}
+                  type="button"
+                  onClick={() => handleDemoPrompt(prompt)}
+                  disabled={isLoading}
+                  className="w-full rounded-lg border px-4 py-2.5 text-left text-sm transition hover:bg-white/5 disabled:opacity-50"
+                  style={{ borderColor: 'var(--chat-input-border)' }}
+                >
+                  {prompt}
+                </button>
+              ))}
+            </div>
           </div>
         )}
 
@@ -330,21 +406,23 @@ export default function ChatBot({
       >
         <div className="flex gap-2">
           <input
-            className="chat-input flex-1 rounded-md border px-3 py-2 text-sm focus:outline-none"
+            className="chat-input flex-1 rounded-md border px-3 py-3 min-h-[44px] focus:outline-none touch-manipulation"
             style={{
               borderColor: 'var(--chat-input-border)',
               backgroundColor: 'var(--chat-container-bg)',
               color: 'var(--chat-assistant-text)',
+              fontSize: '16px',
             }}
             value={input}
             placeholder="Type a message..."
             onChange={(e) => setInput(e.target.value)}
             onFocus={() => setIsExpanded(true)}
+            autoComplete="off"
           />
           <button
             type="submit"
             disabled={isLoading || !input.trim()}
-            className="chat-send-btn rounded-md px-4 py-2 text-sm font-semibold text-white transition disabled:opacity-50"
+            className="chat-send-btn rounded-md min-h-[44px] min-w-[60px] px-4 py-3 text-base font-semibold text-white transition disabled:opacity-50 touch-manipulation"
             style={{
               backgroundColor: 'var(--chat-button)',
             }}
@@ -353,6 +431,9 @@ export default function ChatBot({
           </button>
         </div>
       </form>
+      <p className="px-4 pb-3 pt-1 text-[10px] text-gray-500" style={{ color: 'var(--chat-placeholder)' }}>
+        ListingOS is an AI assistant and may make mistakes. Verify important details independently.
+      </p>
     </div>
   );
 }
