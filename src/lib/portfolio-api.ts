@@ -22,7 +22,7 @@ export function getPortfolioBaseUrl(): string {
 }
 
 /** Ensure base has no trailing /api so that base + "/api/contact" does not become .../api/api/contact. */
-function normalizeBaseUrl(base: string): string {
+export function normalizeBaseUrl(base: string): string {
   return base.replace(/\/api\/?$/, '') || base;
 }
 

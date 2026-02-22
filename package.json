@@ -7,14 +7,21 @@
     "dev:3001": "next dev -p 3001",
     "build": "next build",
     "start": "next start",
-    "lint": "eslint"
+    "lint": "eslint",
+    "db:generate": "prisma generate",
+    "db:push": "prisma db push",
+    "db:migrate": "prisma migrate dev",
+    "test": "vitest run",
+    "test:watch": "vitest"
   },
   "dependencies": {
     "@ai-sdk/openai": "^3.0.26",
     "@ai-sdk/react": "^3.0.80",
+    "@prisma/client": "^6.19.2",
     "@vercel/analytics": "^1.6.1",
     "ai": "^6.0.78",
     "next": "16.1.6",
+    "prisma": "^6.19.2",
     "react": "19.2.3",
     "react-dom": "19.2.3",
     "react-markdown": "^10.1.0",
@@ -29,6 +36,7 @@
     "eslint": "^9",
     "eslint-config-next": "16.1.6",
     "tailwindcss": "^4",
-    "typescript": "^5"
+    "typescript": "^5",
+    "vitest": "^3.2.4"
   }
 }

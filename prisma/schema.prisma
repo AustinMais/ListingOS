@@ -1,0 +1,53 @@
+// Multi-tenant real estate platform
+// Set DATABASE_URL in .env (e.g. postgresql://user:pass@localhost:5432/listing_os)
+
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+model Realtor {
+  id        String   @id @default(cuid())
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+  name      String
+  email     String   @unique
+  listings  Listing[]
+  leads     Lead[]
+}
+
+model Listing {
+  id          String   @id @default(cuid())
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @updatedAt
+  realtorId   String
+  realtor     Realtor  @relation(fields: [realtorId], references: [id], onDelete: Cascade)
+  price       Decimal  @db.Decimal(12, 2)
+  beds        Int
+  baths       Float
+  address     String
+  description String?
+
+  @@index([realtorId])
+}
+
+model Lead {
+  id        String     @id @default(cuid())
+  createdAt DateTime   @default(now())
+  updatedAt DateTime   @updatedAt
+  realtorId String
+  realtor   Realtor    @relation(fields: [realtorId], references: [id], onDelete: Cascade)
+  status    LeadStatus
+
+  @@index([realtorId])
+}
+
+enum LeadStatus {
+  Hot
+  Warm
+  Cold
+}

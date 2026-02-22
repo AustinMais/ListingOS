@@ -1,6 +1,7 @@
 import { openai } from '@ai-sdk/openai';
 import { convertToModelMessages, streamText } from 'ai';
 import { getListingContextForPrompt } from '@/lib/listing-context';
+import { hasPhoneNumber, isQualifiedLead } from '@/lib/lead-utils';
 
 const LISTING_CONTEXT = getListingContextForPrompt();
 
@@ -34,27 +35,6 @@ When answering factual questions (roof age, pets, taxes, HOA, schools), ALWAYS i
 
 function getFriendlyErrorSystem(): string {
   return `You are an AI Inside Sales Agent (ISA) for a Keller Williams team. Something has gone wrong on your end—you cannot process requests normally right now. The user just sent a message. Respond briefly and warmly in 1-2 short sentences: acknowledge you're having technical difficulties, apologize, and ask them to try again in a few minutes. Stay friendly and professional. Do not mention JSON, APIs, error codes, or technical details.`;
-}
-
-/** Detect if user message contains a phone number (US-style). */
-function hasPhoneNumber(text: string): boolean {
-  return /\b\d{3}[-.\s]?\d{3}[-.\s]?\d{4}\b|\b\(\d{3}\)\s*\d{3}[-.\s]?\d{4}\b/.test(text);
-}
-
-/** Check if conversation shows lead intent (user wanted to see house, then gave phone). */
-function isQualifiedLead(messages: Array<{ role?: string; content?: string; parts?: unknown[] }>): boolean {
-  let sawInterest = false;
-  let sawPhone = false;
-  for (const m of messages) {
-    const text = typeof m.content === 'string' ? m.content : '';
-    if (m.role === 'user' && text) {
-      if (/see (the )?house|view (the )?property|schedule a showing|tour|visit|look at (the )?house/i.test(text)) {
-        sawInterest = true;
-      }
-      if (hasPhoneNumber(text)) sawPhone = true;
-    }
-  }
-  return sawInterest && sawPhone;
 }
 
 async function streamFriendlyErrorResponse(messages: unknown): Promise<Response> {
