@@ -21,17 +21,18 @@ model Realtor {
 }
 
 model Listing {
-  id          String                        @id @default(cuid())
-  createdAt   DateTime                     @default(now())
-  updatedAt   DateTime                     @updatedAt
-  realtorId   String
-  realtor     Realtor                      @relation(fields: [realtorId], references: [id], onDelete: Cascade)
-  price       Decimal                      @db.Decimal(12, 2)
-  beds        Int
-  baths       Float
-  address     String
-  description String?
-  embedding   Unsupported("vector(1536)")?
+  id           String                        @id @default(cuid())
+  createdAt    DateTime                     @default(now())
+  updatedAt    DateTime                     @updatedAt
+  realtorId    String
+  realtor      Realtor                      @relation(fields: [realtorId], references: [id], onDelete: Cascade)
+  price        Decimal                      @db.Decimal(12, 2)
+  beds         Int
+  baths        Float
+  address      String
+  description  String?
+  embedding    Unsupported("vector(1536)")?
+  extractedJson Json?                       // Full extracted payload from PDF parser (troubleshooting)
 
   @@index([realtorId])
 }

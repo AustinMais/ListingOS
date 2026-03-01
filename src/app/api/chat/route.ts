@@ -2,6 +2,8 @@ import { openai } from '@ai-sdk/openai';
 import { convertToModelMessages, streamText } from 'ai';
 import { getListingContextForPrompt } from '@/lib/listing-context';
 import { hasPhoneNumber, isQualifiedLead } from '@/lib/lead-utils';
+import { parseListingFromPdfBuffer } from '@/app/actions/parse-listing-pdf';
+import { prisma } from '@/lib/db';
 
 const LISTING_CONTEXT = getListingContextForPrompt();
 
@@ -47,11 +49,30 @@ async function streamFriendlyErrorResponse(messages: unknown): Promise<Response>
   return result.toUIMessageStreamResponse();
 }
 
+function buildPdfAttachmentContext(extracted: {
+  price: number;
+  beds: number;
+  baths: number;
+  address: string;
+  description: string | null;
+}): string {
+  const lines = [
+    '## User-attached listing (from PDF)',
+    `- Price: $${extracted.price.toLocaleString()}`,
+    `- Beds: ${extracted.beds}, Baths: ${extracted.baths}`,
+    `- Address: ${extracted.address}`,
+    extracted.description ? `- Description: ${extracted.description}` : '',
+  ].filter(Boolean);
+  return lines.join('\n');
+}
+
 export async function POST(req: Request) {
   let messages: unknown;
+  let pdfBase64: string | undefined;
   try {
-    const body = await req.json();
+    const body = (await req.json()) as { messages?: unknown; pdf?: string };
     messages = body?.messages ?? [];
+    pdfBase64 = typeof body?.pdf === 'string' ? body.pdf : undefined;
   } catch {
     messages = [{ role: 'user' as const, content: 'Hi' }];
   }
@@ -67,10 +88,40 @@ export async function POST(req: Request) {
     });
   }
 
+  let system = systemPrompt;
+  if (pdfBase64) {
+    try {
+      const buffer = Buffer.from(pdfBase64, 'base64');
+      const parsed = await parseListingFromPdfBuffer(buffer);
+      if (parsed.ok) {
+        system = `${systemPrompt}\n\n${buildPdfAttachmentContext(parsed.data)}`;
+        // Persist to DB for troubleshooting (full JSON stored in extractedJson)
+        const realtorId =
+          process.env.PDF_LISTING_REALTOR_ID ??
+          (await prisma.realtor.findFirst({ select: { id: true } }))?.id;
+        if (realtorId) {
+          await prisma.listing.create({
+            data: {
+              realtorId,
+              price: parsed.data.price,
+              beds: parsed.data.beds,
+              baths: parsed.data.baths,
+              address: parsed.data.address,
+              description: parsed.data.description ?? undefined,
+              extractedJson: parsed.data as unknown as object,
+            },
+          });
+        }
+      }
+    } catch (e) {
+      console.warn('[chat] PDF parse failed:', e);
+    }
+  }
+
   try {
     const result = streamText({
       model: openai('gpt-4o-mini'),
-      system: systemPrompt,
+      system,
       messages: await convertToModelMessages(msgArray as Parameters<typeof convertToModelMessages>[0]),
     });
 

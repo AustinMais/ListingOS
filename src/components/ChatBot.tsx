@@ -32,6 +32,9 @@ export default function ChatBot({
 }: ChatBotProps) {
   const [input, setInput] = useState('');
   const [isExpanded, setIsExpanded] = useState(false);
+  const [attachedPdf, setAttachedPdf] = useState<string | null>(null);
+  const [attachedFileName, setAttachedFileName] = useState<string | null>(null);
+  const fileInputRef = useRef<HTMLInputElement>(null);
   const { messages, sendMessage, status, error, setMessages } = useChat();
   const messagesEndRef = useRef<HTMLDivElement>(null);
 
@@ -41,12 +44,36 @@ export default function ChatBot({
     messagesEndRef.current?.scrollIntoView({ behavior: 'smooth' });
   }, [messages]);
 
+  const handleFileChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    const file = e.target.files?.[0];
+    if (!file || file.type !== 'application/pdf') return;
+    const reader = new FileReader();
+    reader.onload = () => {
+      const result = reader.result;
+      if (typeof result === 'string') {
+        const base64 = result.split(',')[1] ?? result;
+        setAttachedPdf(base64);
+        setAttachedFileName(file.name);
+      }
+    };
+    reader.readAsDataURL(file);
+    e.target.value = '';
+  };
+
+  const clearAttachment = () => {
+    setAttachedPdf(null);
+    setAttachedFileName(null);
+    fileInputRef.current?.value && (fileInputRef.current.value = '');
+  };
+
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
-    const text = input.trim();
+    const text = input.trim() || (attachedPdf ? 'What can you tell me about this listing?' : '');
     if (!text || isLoading) return;
     setInput('');
-    sendMessage({ text });
+    const body = attachedPdf ? { pdf: attachedPdf } : undefined;
+    clearAttachment();
+    sendMessage({ text }, body ? { body } : undefined);
     setIsExpanded(true);
   };
 
@@ -198,30 +225,50 @@ export default function ChatBot({
             {/* Input — minimal padding */}
             <form
               onSubmit={handleSubmit}
-              className="flex gap-2 border-t px-2 py-2 sm:py-1.5"
+              className="flex flex-col gap-1.5 border-t px-2 py-2 sm:py-1.5"
               style={{ borderColor: 'var(--chat-border)' }}
             >
-              <input
-                className="chat-input flex-1 rounded border px-3 py-3 sm:py-2 min-h-[44px] focus:outline-none"
-                style={{
-                  borderColor: 'var(--chat-input-border)',
-                  backgroundColor: 'var(--chat-container-bg)',
-                  color: 'var(--chat-assistant-text)',
-                  fontSize: '16px',
-                }}
-                value={input}
-                placeholder="Type a message..."
-                onChange={(e) => setInput(e.target.value)}
-                autoComplete="off"
-              />
-              <button
-                type="submit"
-                disabled={isLoading || !input.trim()}
-                className="chat-send-btn shrink-0 min-h-[44px] min-w-[60px] px-4 py-3 sm:py-2 text-base font-semibold text-white transition disabled:opacity-50 touch-manipulation"
-                style={{ backgroundColor: 'var(--chat-button)' }}
-              >
-                Send
-              </button>
+              {attachedFileName && (
+                <div className="flex items-center gap-2 text-xs" style={{ color: 'var(--chat-placeholder)' }}>
+                  <span className="truncate">PDF: {attachedFileName}</span>
+                  <button type="button" onClick={clearAttachment} className="shrink-0 underline hover:no-underline">
+                    Remove
+                  </button>
+                </div>
+              )}
+              <div className="flex gap-2">
+                <input type="file" ref={fileInputRef} accept="application/pdf" className="hidden" onChange={handleFileChange} aria-hidden />
+                <button
+                  type="button"
+                  onClick={() => fileInputRef.current?.click()}
+                  className="shrink-0 flex items-center justify-center p-2 text-[var(--chat-assistant-text)] hover:opacity-80"
+                  title="Attach a listing PDF"
+                  aria-label="Attach a listing PDF"
+                >
+                  <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" aria-hidden><path d="m21.44 11.05-9.19 9.19a6 6 0 0 1-8.49-8.49l8.57-8.57A4 4 0 1 1 18 8.84l-8.59 8.57a2 2 0 0 1-2.83-2.83l8.49-8.48" /></svg>
+                </button>
+                <input
+                  className="chat-input flex-1 rounded border px-3 py-3 sm:py-2 min-h-[44px] focus:outline-none"
+                  style={{
+                    borderColor: 'var(--chat-input-border)',
+                    backgroundColor: 'var(--chat-container-bg)',
+                    color: 'var(--chat-assistant-text)',
+                    fontSize: '16px',
+                  }}
+                  value={input}
+                  placeholder={attachedPdf ? 'Add a message (optional)...' : 'Type a message...'}
+                  onChange={(e) => setInput(e.target.value)}
+                  autoComplete="off"
+                />
+                <button
+                  type="submit"
+                  disabled={isLoading || (!input.trim() && !attachedPdf)}
+                  className="chat-send-btn shrink-0 min-h-[44px] min-w-[60px] px-4 py-3 sm:py-2 text-base font-semibold text-white transition disabled:opacity-50 touch-manipulation"
+                  style={{ backgroundColor: 'var(--chat-button)' }}
+                >
+                  Send
+                </button>
+              </div>
             </form>
             <p className="px-2 pb-2 pt-0.5 text-[10px] text-gray-500" style={{ color: 'var(--chat-placeholder)' }}>
               ListingOS is an AI assistant and may make mistakes. Verify important details independently.
@@ -404,9 +451,27 @@ export default function ChatBot({
         className={`border-t ${embedded ? 'p-3' : 'p-4'}`}
         style={{ borderColor: 'var(--chat-border)' }}
       >
-        <div className="flex gap-2">
+        {attachedFileName && (
+          <div className="mb-2 flex items-center gap-2 text-xs" style={{ color: 'var(--chat-placeholder)' }}>
+            <span className="truncate">PDF: {attachedFileName}</span>
+            <button type="button" onClick={clearAttachment} className="shrink-0 underline hover:no-underline">
+              Remove
+            </button>
+          </div>
+        )}
+        <div className="flex flex-wrap gap-2">
+          <input type="file" ref={fileInputRef} accept="application/pdf" className="hidden" onChange={handleFileChange} aria-hidden />
+          <button
+            type="button"
+            onClick={() => fileInputRef.current?.click()}
+            className="shrink-0 flex items-center justify-center p-2 text-[var(--chat-assistant-text)] hover:opacity-80"
+            title="Attach a listing PDF"
+            aria-label="Attach a listing PDF"
+          >
+            <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" aria-hidden><path d="m21.44 11.05-9.19 9.19a6 6 0 0 1-8.49-8.49l8.57-8.57A4 4 0 1 1 18 8.84l-8.59 8.57a2 2 0 0 1-2.83-2.83l8.49-8.48" /></svg>
+          </button>
           <input
-            className="chat-input flex-1 rounded-md border px-3 py-3 min-h-[44px] focus:outline-none touch-manipulation"
+            className="chat-input flex-1 min-w-[120px] rounded-md border px-3 py-3 min-h-[44px] focus:outline-none touch-manipulation"
             style={{
               borderColor: 'var(--chat-input-border)',
               backgroundColor: 'var(--chat-container-bg)',
@@ -414,14 +479,14 @@ export default function ChatBot({
               fontSize: '16px',
             }}
             value={input}
-            placeholder="Type a message..."
+            placeholder={attachedPdf ? 'Add a message (optional)...' : 'Type a message...'}
             onChange={(e) => setInput(e.target.value)}
             onFocus={() => setIsExpanded(true)}
             autoComplete="off"
           />
           <button
             type="submit"
-            disabled={isLoading || !input.trim()}
+            disabled={isLoading || (!input.trim() && !attachedPdf)}
             className="chat-send-btn rounded-md min-h-[44px] min-w-[60px] px-4 py-3 text-base font-semibold text-white transition disabled:opacity-50 touch-manipulation"
             style={{
               backgroundColor: 'var(--chat-button)',

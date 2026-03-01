@@ -7,10 +7,6 @@ import {
   type ExtractedListing,
 } from '@/lib/listing-extraction-schema';
 
-// Re-export for consumers that need the type or schema
-export type { ExtractedListing } from '@/lib/listing-extraction-schema';
-export { extractedListingSchema } from '@/lib/listing-extraction-schema';
-
 const LISTING_EXTRACTION_SYSTEM = `You are an expert at parsing Keller Williams and real estate listing sheets (PDFs, flyers, and MLS-style documents).
 
 Your task is to extract structured property details from the provided text. The text may come from:
